@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,9 +7,9 @@ st.header('Tony Blood Pressure readings')
 
 st.subheader('Chart of mean readings over time')
 
-import matplotlib.pyplot as plt
 
 trend_interval = 7
+
 
 def ampm(row):
     if row['time_from_DateTime'] <= 12:
@@ -16,7 +17,6 @@ def ampm(row):
     else:
         val = 'pm'
     return val
-
 
 
 fpath = 'data/Report (September 23 2022 – October 04 2022).csv'
@@ -33,7 +33,6 @@ df['time_from_DateTime'] = df['DateTime'].dt.hour
 df['ampm'] = df.apply(ampm, axis=1)
 
 
-
 # df = df.set_index('DateTime')
 
 
@@ -42,36 +41,35 @@ df['ampm'] = df.apply(ampm, axis=1)
 # df = df.groupby(df.DateTime.dt.day)["Pulse (bpm)"].mean().reset_index()
 
 df_AM = df[(df.time_from_DateTime >= 0) & (df.time_from_DateTime <= 12)]
-#print(df_AM)
+# print(df_AM)
 
 df_PM = df[(df.time_from_DateTime > 12) & (df.time_from_DateTime <= 24)]
-#print(df_PM)
+# print(df_PM)
 
-#calculate equation for trendline
+# calculate equation for trendline
 #df_rolling_sys = df['Systolic (mmHg)'].to_frame()
 
 
 #ampm_filter = 'pm'
 #df = df.loc[df['ampm'] == ampm_filter]
 df = df.groupby([pd.Grouper(key='DateTime', freq='24H')
-                    ]).agg(mean_Pulse=('Pulse (bpm)',
-                                       'mean'),
-                           mean_BP_Sys=('Systolic (mmHg)',
-                                        'mean'),
-                           mean_BP_Dia=('Diastolic (mmHg)',
-                                        'mean')).reset_index()
+                 ]).agg(mean_Pulse=('Pulse (bpm)',
+                                    'mean'),
+                        mean_BP_Sys=('Systolic (mmHg)',
+                                     'mean'),
+                        mean_BP_Dia=('Diastolic (mmHg)',
+                                     'mean')).reset_index()
 
 
 df['rolling_sys'] = df['mean_BP_Sys'].rolling(trend_interval).mean()
 df['rolling_dia'] = df['mean_BP_Dia'].rolling(trend_interval).mean()
 
-#convert_dict = {'mean_Pulse': int,
+# convert_dict = {'mean_Pulse': int,
 #                'mean_BP_Sys': int,
 #                'mean_BP_Dia': int}
 
 # df = df.astype(convert_dict)
 # need to pull out time only
-
 
 
 print(df)
