@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+st.set_page_config(layout="wide")
 st.header('Tony Blood Pressure readings')
 
 st.subheader('Chart of mean readings over time')
